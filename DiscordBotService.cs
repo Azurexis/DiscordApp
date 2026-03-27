@@ -271,7 +271,7 @@ public class DiscordBotService : BackgroundService
             return Results.Problem("Admin channel not found.");
 
         //Send message
-        await channel.SendMessageAsync("NanaBot is up and running!");
+        await channel.SendMessageAsync("NanaBot is up and running!:)");
         return Results.Ok("Message sent.");
     }
 
