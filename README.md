@@ -69,4 +69,4 @@ This project is intended as a lightweight internal service / portfolio project a
 
 ## Author
 
-Nick / Azurexis
+Nick Nespor
