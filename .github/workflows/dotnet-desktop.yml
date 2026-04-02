@@ -1,4 +1,4 @@
-name: Build and deploy container to Azure Web App
+name: Build and deploy container to Azure Web App - paa-discordapp-linux
 
 on:
   push:
