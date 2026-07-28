@@ -270,25 +270,17 @@ public class DiscordBotService : BackgroundService
 
     private async Task HoneypotChannel_BanUsers(SocketMessage message)
     {
-        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 0");
-
         //Don't process webhooks
         if (message.Source == MessageSource.Webhook)
             return;
-
-        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 1");
 
         //Don't process messages in non-text channels
         if (message.Channel is not SocketTextChannel textChannel)
             return;
 
-        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 2");
-
         //Don't process messages not in the right channel ID
         if (textChannel.Id != honeypotChannelID)
             return;
-
-        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 3");
 
         //Ban user
         await textChannel.Guild.BanUserAsync(
