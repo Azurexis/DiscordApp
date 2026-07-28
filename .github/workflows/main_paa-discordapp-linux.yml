@@ -45,12 +45,15 @@ jobs:
           docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
           docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
 
-      - name: Point Web App to new image
+      - name: Update main container
         run: |
-          az webapp config container set \
+          az webapp sitecontainers update \
             --name $AZURE_WEBAPP_NAME \
             --resource-group $RESOURCE_GROUP \
-            --container-image-name $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
+            --container-name main \
+            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
+            --target-port 8080 \
+            --is-main true
 
       - name: Restart Web App
         run: |
