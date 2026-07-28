@@ -209,6 +209,9 @@ public class DiscordBotService : BackgroundService
             username: _message.Author.Username,
             avatarUrl: _message.Author.GetAvatarUrl() ?? _message.Author.GetDefaultAvatarUrl()
         );
+
+        //Log
+        logger.LogInformation("Transformed message in nana channel.");
     }
 
     public async Task GamelogChannel_SendMessage(Type _type, params string[] _params)
@@ -260,21 +263,32 @@ public class DiscordBotService : BackgroundService
 
         //Send message
         await channel.SendMessageAsync(message);
+
+        //Log
+        logger.LogInformation("Sent message in gamelog channel: " + message);
     }
 
     private async Task HoneypotChannel_BanUsers(SocketMessage message)
     {
+        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 0");
+
         //Don't process webhooks
         if (message.Source == MessageSource.Webhook)
             return;
+
+        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 1");
 
         //Don't process messages in non-text channels
         if (message.Channel is not SocketTextChannel textChannel)
             return;
 
+        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 2");
+
         //Don't process messages not in the right channel ID
         if (textChannel.Id != honeypotChannelID)
             return;
+
+        logger.LogInformation("HoneypotChannel_BanUsers Breakpoint 3");
 
         //Ban user
         await textChannel.Guild.BanUserAsync(
@@ -285,6 +299,9 @@ public class DiscordBotService : BackgroundService
                 AuditLogReason =
                     "Posted in honeypot channel. Contact an administrator if this was a mistake."
             });
+
+        //Log
+        logger.LogInformation("Banned user in honeypot channel.");
     }
 
     public async Task<IResult> Debug_SendMessageInAdminChannel()
