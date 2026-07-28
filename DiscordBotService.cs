@@ -24,6 +24,7 @@ public class DiscordBotService : BackgroundService
     private readonly string discordAPIKey;
     private readonly ulong nanaChannelID;
     private readonly ulong gamelogChannelID;
+    private readonly ulong honeypotChannelID;
     private readonly ulong adminChannelID;
 
     private readonly Random random = new();
@@ -50,6 +51,9 @@ public class DiscordBotService : BackgroundService
         if (!ulong.TryParse(config["gamelogChannelID"], out gamelogChannelID))
             throw new InvalidOperationException("Invalid or missing environment variable: gamelogChannelID");
 
+        if (!ulong.TryParse(config["honeypotChannelID"], out honeypotChannelID))
+            throw new InvalidOperationException("Invalid or missing environment variable: honeypotChannelID");
+
         if (!ulong.TryParse(config["adminChannelID"], out adminChannelID))
             throw new InvalidOperationException("Invalid or missing environment variable: adminChannelID");
 
@@ -71,6 +75,7 @@ public class DiscordBotService : BackgroundService
         //Hook to message received methods
         client.MessageReceived += General_RespondIfPinged;
         client.MessageReceived += NanaChannel_TransformMessages;
+        client.MessageReceived += HoneypotChannel_BanUsers;
 
         client.Log += msg =>
         {
@@ -255,6 +260,31 @@ public class DiscordBotService : BackgroundService
 
         //Send message
         await channel.SendMessageAsync(message);
+    }
+
+    private async Task HoneypotChannel_BanUsers(SocketMessage message)
+    {
+        //Don't process webhooks
+        if (message.Source == MessageSource.Webhook)
+            return;
+
+        //Don't process messages in non-text channels
+        if (message.Channel is not SocketTextChannel textChannel)
+            return;
+
+        //Don't process messages not in the right channel ID
+        if (textChannel.Id != honeypotChannelID)
+            return;
+
+        //Ban user
+        await textChannel.Guild.BanUserAsync(
+            userId: message.Author.Id,
+            pruneSeconds: 6 * 60 * 60,
+            options: new RequestOptions
+            {
+                AuditLogReason =
+                    "Posted in honeypot channel. Contact an administrator if this was a mistake."
+            });
     }
 
     public async Task<IResult> Debug_SendMessageInAdminChannel()

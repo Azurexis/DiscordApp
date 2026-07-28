@@ -13,7 +13,13 @@ app.MapGet("/", () => Results.Ok("NanaBot web app is running."));
 app.MapGet("/health", () => Results.Ok("OK"));
 
 //Set endpoints
-app.MapPost("/debug", async (HttpRequest request, DiscordBotService nanaBot) =>
+app.MapPost("/gamelogChannel_sendMessage", async (DiscordBotService nanaBot, DiscordBotService.Type type, string[] values) =>
+{
+    await nanaBot.GamelogChannel_SendMessage(type, values);
+    return Results.Ok();
+});
+
+app.MapPost("/debug", async (DiscordBotService nanaBot) =>
 {
     return await nanaBot.Debug_SendMessageInAdminChannel();
 });
