@@ -10,7 +10,7 @@ env:
   RESOURCE_GROUP: Paper-Animal-Adventure
   ACR_NAME: paacontainerregistry
   ACR_LOGIN_SERVER: paacontainerregistry.azurecr.io
-  IMAGE_NAME: paa-discordapp
+  IMAGE_NAME: paa-discordapp-linux
 
 permissions:
   contents: read
